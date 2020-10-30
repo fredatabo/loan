@@ -1,0 +1,61 @@
+dateOfBirth,state,lga,currentAddress,residentialAddress
+
+'ministry', 'section', 'rank', 'level', 'step','pensionable'
+,'dateOfFirstAppointment', 'dateOfcurrentAppointment',
+'bankname', 'accountno', 'accountname',
+'gazzette', 'reason', 'surety', 'photo', 'pin','pid',
+'payslip','appointmentConfirmation', 'fileNo', 'reason',
+'verified'
+
+
+    update bio data 1
+{"surname" : "Moses",
+        "firstname" : "Helen",
+        "middlename" : "troy",
+        "maidenname" : "",
+        "serviceno" : "dd89",
+        "dateOfBirth" : "2020-01-10",
+        "state" : "Benue",
+        "lga" : "Makurdi",
+        "phone" : "08155501298",
+        "residentialAddress" : "no 20 kagoma abuja",
+        "currentAddress" : "20 logo Benue"
+}
+
+
+
+
+ 
+        "surname": "This",
+        "firstname": "jerry",
+        "middlename": null,
+        "maidenname": null,
+        "serviceno": null,
+        "accountno": null,
+        "phone": null,
+        "ministry": null,
+        "section": null,
+        "dateOfBirth": null,
+        "rank": null,
+        "level": null,
+        "dateOfFirstAppointment": null,
+        "dateOfcurrentAppointment": null,
+        "step": null,
+        "state": null,
+        "lga": null,
+        "pensionable": null,
+        "gazzette": null,
+        "surety": null,
+        "photo": null,
+        "pensionFundAdmin": null,
+        "pin": null,
+        "currentAddress": null,
+        "residentialAddress": null,
+        "appointmentConfirmation": null,
+        "payslip": null,
+        "fileNO": null,
+        "reason": null,
+        "user_id": 10,
+        "pid": null,
+
+
