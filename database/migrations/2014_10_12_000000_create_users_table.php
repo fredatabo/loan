@@ -17,13 +17,16 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('verifyemail');
             $table->string('verifypaystatus');
-            $table->string('ipssno')->unique();
-            $table->string('email')->unique();
+            $table->string('verifyes')->nullable();
+            $table->string('ipssno')->unique()->nullable();
+            $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('active')->nullable();
             $table->string('activation_token')->nullable();
             $table->rememberToken();
+            $table->string('username')->nullable()->unique(); // used for login by ES,Super Admin etc
+            $table->string('role')->nullable();
             $table->timestamps();
         });
     }

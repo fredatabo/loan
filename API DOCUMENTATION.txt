@@ -1,0 +1,137 @@
+API DOCUMENTATION
+
+1.REGISTER USER
+https://integratedlearningschool.com/loan/public/api/register
+
+1b // update payment records
+        https://integratedlearningschool.com/loan/public/api/updatePaymentRecord/{id}
+    this endpoint changes the verifypaystatus to yes after payment is 
+    confirmed. if you have not implemented payment manually change it to yes.
+
+EXPECTED DATA : email, passsword, ipssno, surname,middlename,firstname,
+phone
+(after this action, remember to open your email and verify the link)
+
+2.LOGIN
+https://integratedlearningschool.com/loan/public/api/login
+
+EXPECTED DATA : email and password
+
+3.GET USER INFO WITHOUT AUTH from personalinfo table
+https://integratedlearningschool.com/loan/public/api/userInfo/{id}
+
+EXPECTED parameter IS USER id
+
+4. Get user info with auth
+   https://integratedlearningschool.com/loan/public/api/getUser/{id}
+ note : (the above end point gets the user info of a logged in user)
+
+5. LOG OUT
+  https://integratedlearningschool.com/loan/public/api/logout
+
+6. UPDATE BIO DATA
+   https://integratedlearningschool.com/loan/public/api/updateBioData/{id}
+ expected inputes
+  {
+"surname" : "Moses",
+    "firstname" : "Helen",
+    "middlename" : "troy",
+    "maidenname" : "",
+    "serviceno" : "dd89",
+    "dateOfBirth" : "2020-01-10",
+    "state" : "Benue",
+    "lga" : "Makurdi",
+    "phone" : "08155501298",
+    "residentialAddress" : "no 20 kagoma abuja",
+    "currentAddress" : "20 logo Benue"}
+
+8. UPDATE APPOINTMENT RECORDS
+  https://integratedlearningschool.com/loan/public/api/updateAppointmentRecord/{id}
+ expected inputs
+ {"dateOfFirstAppointment" : "2010-02-02", 
+"dateOfcurrentAppointment" : "2010-02-02", 
+"ministry" : "Defence", "section" : "human kinetics", 
+"rank" : "Brigadier", "level" : "17", "step" : "5", 
+"accountname" : "Johnson dogon yaro", "bankname" : "gt bank", 
+"accountno" : "0334450", "pensionable" : "yes", "pin" : "4567", 
+"pid" : "1", 
+"reason": "good to go" }
+
+//document upload routes
+/documents upload route
+    uploadPassport/{id}', 
+    uploadAppointmentLetter/{id}
+    uploadPayslip/{id} 
+    uploaduploadGazzette/{id} 
+   uploadSurety/{id}
+    uploadReason/{id}
+
+please append this to the rouets
+https://integratedlearningschool.com/loan/public/api
+
+NEW ADDITIONS FRIDAY 6TH 2020
+
+Applicant submits pending record to ES for verification
+  https://integratedlearningschool.com/loan/public/api/submitToEs/{id}
+NOTE: The ID is personalinfo table Id
+
+SUPER ADMIN routes
+
+To login as super admin and Es use this route
+localhost/sites/loan/public/api/loginSuperAdminAndEs
+for super admin login credentials (username: superadmin, password: superadmin)
+
+1. ADD ES BY AUTHENTICATED SUPER ADMIN
+
+a.https://integratedlearningschool.com/loan/public/api/addEsRole
+
+Expected data
+
+{"email" : "king@gmail.com", 
+        "password" : "king",
+        "username" : "king",
+        "ipssno" : "1234567erq1",
+        "surname" : "fredordo",
+        "firstname" : "joseph",
+        "middlename" : "okoro",
+        "phone" : "81555012998",
+        "level" : "11"
+       }
+
+ b. delete es from database
+
+https://integratedlearningschool.com/loan/public/api/deleteEs/{id}
+
+c. get all es
+https://integratedlearningschool.com/loan/public/api/allEsRecords
+d. get esrecord by id
+https://integratedlearningschool.com/loan/public/api/getEsRecord/{id}
+e.update ES record by super admin 
+   https://integratedlearningschool.com/loan/public/api/updateEsRecord/{id}
+    sample data
+   {"email" : "kin12g@gmail.com", 
+        
+       
+        "ipssno" : "1234567erq11",
+        "surname" : "fredordooo",
+        "firstname" : "josephh",
+        "middlename" : "okorot",
+        "phone" : "81555012998",
+        "level" : "11"
+       }
+
+  
+ES ROLES FUNCTIONS
+1. get all applicants
+   https://integratedlearningschool.com/loan/public/api/getAllApplicants
+2.get all pending applicants
+  https://integratedlearningschool.com/loan/public/api/getAllApplicantsPending
+3.Get applicant by Id
+   https://integratedlearningschool.com/loan/public/api/getApplicantRecordById/{id}
+4.Verify pending applicants
+   https://integratedlearningschool.com/loan/public/api/verifyRecords/{id}
+
+
+
+
+

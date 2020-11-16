@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\PersonalInfo;
 use App\User;
+use App\Cieling;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -31,7 +32,31 @@ class PersonalInfoController extends Controller
 
 public function getUserById($id)
 {
-    $person = auth()->user()->personal_infos()->find($id);
+   // $person = auth()->user()->personal_infos()->find($id);
+
+    $user = Auth::user();
+
+    // Get the currently authenticated user's ID...
+    //$id = Auth::id();
+    
+        if (!Auth::check())
+    {
+        // The user is logged in...
+        
+        // for other fields other than the primary key
+        //$email = Auth::user()->email;
+        return response()->json([
+            'success' => false,
+            'message' => 'user is not logged in'
+        ], 400);
+    }
+       
+    else {
+        $id = Auth::id();
+    
+      
+    }
+    $person = PersonalInfo::where('user_id', $id)->first(); 
 
     if (!$person) {
         return response()->json([
@@ -307,5 +332,95 @@ public function update(Request $request, $id)
         ], 500);
 }
 
+
+public function getUserByIdWithoutAuth($id)
+{
+   // $person = auth()->user()->personal_infos()->find($id);
+
+   /** 
+    $user = Auth::user();
+
+    // Get the currently authenticated user's ID...
+    //$id = Auth::id();
+    
+        if (!Auth::check())
+    {
+        // The user is logged in...
+        
+        // for other fields other than the primary key
+        //$email = Auth::user()->email;
+        return response()->json([
+            'success' => false,
+            'message' => 'user is not logged in'
+        ], 400);
+    }
+       
+    else {
+        $id = Auth::id();
+    
+      
+    }
+    */
+    
+    $person = PersonalInfo::where('user_id', $id)->first(); 
+
+    if (!$person) {
+        return response()->json([
+            'success' => false,
+            'message' => 'information not found '
+        ], 400);
+    }
+
+    return response()->json([
+       // 'success' => true,
+        'data' => $person->toArray()
+    ], 400);
+}
+
+
+
+public function submitToEs(Request $request, $id) {
+
+    $user = Auth::user();
+
+    // Get the currently authenticated user's ID...
+    //$id = Auth::id();
+    
+        if (!Auth::check())
+    {
+        // The user is logged in...
+        
+        // for other fields other than the primary key
+        //$email = Auth::user()->email;
+        return response()->json([
+            'success' => false,
+            'message' => 'user is not logged in'
+        ], 400);
+    }
+
+   
+    if (PersonalInfo::where('id', $id)->exists()) {
+      $applicant = PersonalInfo::find($id);
+  
+      $updated =    $applicant->update([
+        'verified' => 'pending'
+        
+         
+    ]);
+
+
+   
+
+      return response()->json([
+        "success" => true,
+        "applicant" => $applicant
+      ], 200);
+    } else {
+      return response()->json([
+        "message" => "Record not found",
+        "success" => false
+      ], 404);
+    }
+  }
 
 }
