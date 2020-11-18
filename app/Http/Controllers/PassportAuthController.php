@@ -8,7 +8,7 @@ use App\Es;
 use App\PersonalInfo;
 use Mail;
 use App\Mail\Mailer;
-
+use DateTime;
 
 
 
@@ -19,7 +19,7 @@ class PassportAuthController extends Controller
      */
 
      private $status = 200;
-    public function register(Request $request)
+   public function register(Request $request)
     {
         $this->validate($request, [
             
@@ -47,6 +47,48 @@ class PassportAuthController extends Controller
       if($ipssnoCount >= 1) {
         return response()->json(["status" => "failed", "message" => "IPSS has been used  already."]);
       }
+
+      $dateofbirth = $request->dateOfBirth;
+      $dateofappointment = $request->dateOfFirstAppointment;
+
+      $dateofbirthForCal = new DateTime($dateofbirth);
+      $dateofappointmentForCalc = new DateTime($dateofappointment);
+
+      $today = new Datetime(date('Y-m-d'));
+	   
+$diff = $today->diff($dateofbirthForCal);
+      $age = $diff->y;
+	  
+	  
+     
+      $yearsInService = $today->diff($dateofappointmentForCalc)->y;
+
+	   
+      $determinant = $yearsInService + $age;
+
+	    
+      //get number of years left in service
+      $yearsLeft = 0;
+
+      if($determinant >= 60) {
+          $yearsLeft = 60 - $age;
+
+      }
+
+      else {
+          $TyearsLeft = 35 - $yearsInService;
+		  if(($age + $TyearsLeft) >= 60) {
+			$yearsLeft = 60 - $age;  
+		  }
+		  else {
+			  $yearsLeft = 35 - $yearsInService;
+		  }
+      }
+
+      if( $yearsLeft < 5) {
+        return response()->json(["status" => "failed", "message" => "you are not qualified, you have less than five years.",
+        "years" => $yearsLeft]);
+      }
     
      $token  = md5( rand(0,1000));
      // $url = url('api/signup/activate/'.$token);
@@ -71,7 +113,9 @@ class PassportAuthController extends Controller
           'firstname' => strtoupper($request->firstname),
           'middlename' => strtoupper($request->middlename),
            'phone'=> $request->phone,
-           'user_id'=>$id
+           'user_id'=>$id,
+           'dateOfBirth' => $request->dateOfBirth,
+        'dateOfFirstAppointment' => $request->dateOfFirstAppointment
         ]);
         $token = $user->createToken('LaravelAuthApp')->accessToken;
 
