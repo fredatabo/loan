@@ -55,7 +55,7 @@ class LoanController extends Controller
 
 
 
-      public function applyForLoanStage1(Request $request, $id) {
+     public function applyForLoanStage1(Request $request, $id) {
         $user = Auth::user();
 
         // Get the currently authenticated user's ID...
@@ -83,9 +83,13 @@ class LoanController extends Controller
         }
 
         */
-        $loanType = $request->loantype;
-        $amount = $request->amount;
-        $numberofyears = $request->numberofyears;
+        $loantype = $request->loantype;
+        $state = $request->state; //state in which property is located
+        $description =  $request->description; //description and location of property
+        $lga =  $request->lga; //local government area of property
+        $designation = $request->designation; //ministr/parastatal
+       
+       
         
 
         //get applicantrecord from personalinfo table
@@ -103,11 +107,125 @@ class LoanController extends Controller
         $dateofappointment = $person->dateOfFirstAppointment;
         $level = $person->level;
 
+        
+
+
         //get cieling by level
         $cieling = Cieling::where('level', $level)->first(); 
 
+        $maxAmount = $cieling->cieling;
+
+       // return response()->json(["cieling" => $maxAmount ]);
+
+
+        $amountExpected = $request->amountExpected;
+
+        if( $amountExpected > $maxAmount) {
+          return response()->json(["status" => "failed", "message" => "you are not entitled to such amount.", 'ceiling' => $cieling]);
+        }  
+
+        $dateofbirthForCal = new DateTime($dateofbirth);
+        $dateofappointmentForCalc = new DateTime($dateofappointment);
+  
+        $today = new Datetime(date('Y-m-d'));
+       
+  $diff = $today->diff($dateofbirthForCal);
+        $age = $diff->y;
+      
+      
+       
+        $yearsInService = $today->diff($dateofappointmentForCalc)->y;
+  
+       
+        $determinant = $yearsInService + $age;
+  
         
+        //get number of years left in service
+        $yearsLeft = 0;
+  
+        if($determinant >= 60) {
+            $yearsLeft = 60 - $age;
+  
+        }
+  
+        else {
+            $TyearsLeft = 35 - $yearsInService;
+        if(($age + $TyearsLeft) >= 60) {
+        $yearsLeft = 60 - $age;  
+        }
+        else {
+          $yearsLeft = 35 - $yearsInService;
+        }
+        }
+            //this section calculates, monthly payments, total interest to be paid                        
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+        
+       // 'description', 'state','lga','town', 'noofyears', 'amount' amountpermonth,noofmonths
+
+       //formula for calculating anuity and no of years to pay etc
+
+/*
+P = PV × r /1 − (1+r)−n 
+p = amount to be paid per month
+pv = cieling
+r = rate
+n= number of months
+
+*/
+
+// The calculations below will be subjected to further scrutiny
+   $noofmonths = (($yearsLeft - 1) *12);
+ 
+        $pv =  $amountExpected;
+        $r = 0.03;
+        $power = pow(1 + 0.03,-($noofmonths));
+
+        $p = (($amountExpected ) * ($r)/(1-$power));
+
+        $totalPayback = $p * $noofmonths;
+        $compundInterest = ($totalPayback - $pv);
+
     
+       /*
+          return response()->json(["yearsLeft" => $yearsLeft , "months" => $noofmonths, 'per month' => $p, 'totalpayback' => $totalPayback, 
+          'compond intesrest' => $compundInterest]);
+*/
+
+          $loan = LoanTable::create([
+            'user_id' => $id,
+           
+            'state' => $state,
+            
+            'lga' => $lga,
+            'description' => $description,
+            'noofmonths' => $noofmonths,
+            'noofyears' => $yearsLeft-1,
+            'amount' => $amountExpected,
+           'loantype' => $loantype,
+            'designation' => $designation,
+            'totalpayback' => $compundInterest,
+            'permonth' => $p
+        ]);
+
+        //'total', 'cieling', 'permonth','user_id'
+        $paymentSchedule = RepaymentSchedule::create([
+
+          'total' => $compundInterest,
+          'cieling' => $amountExpected,
+          'permonth' => $p,
+          'user_id' => $id
+
+            
+        ]);
+
+
+        if($loan && $paymentSchedule) {
+          return response()->json(["success" => true]);
+        } 
+        
+    else {
+      return response()->json(["success" => false]);
+    }
 
       }
    
